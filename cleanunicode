@@ -5,33 +5,38 @@
 #
 # For instance, it replaces the unicode quotation mark
 # with a standard ASCII quotation mark.
-#
-# This was tested on macOS. It is unlikely to work on
-# Linux without slight modifications.
+
+native_sed() {
+  if [ `uname` == "Darwin" ]; then
+    sed -i '' -E "$1" "$2"
+  else
+    sed -i -e "$1" "$2"
+  fi
+}
 
 for file in "$@"
 do
     echo "$file"
 
     # Quotes
-    sed -i '' -E 's/(“|”)/"/g' "$file"
-    sed -i '' -E "s/(‘|’)/'/g" "$file"
+    native_sed 's/(“|”)/"/g' "$file"
+    native_sed "s/(‘|’)/'/g" "$file"
 
     # En-dash
-    sed -i '' -E "s/–/--/g" "$file"
+    native_sed "s/–/--/g" "$file"
 
     # Em-dash
-    sed -i '' -E "s/—/--/g" "$file"
+    native_sed "s/—/--/g" "$file"
 
     # Ellipsis
-    sed -i '' -E "s/…/.../g" "$file"
+    native_sed "s/…/.../g" "$file"
 
     # No-break space
-    sed -i '' -E "s/ / /g" "$file"
+    native_sed "s/ / /g" "$file"
 
     # Punctuation space
-    sed -i '' -E "s/ / /g" "$file"
+    native_sed "s/ / /g" "$file"
 
     # Zero-width space
-    sed -i '' -E "s/​//g" "$file"
+    native_sed "s/​//g" "$file"
 done
