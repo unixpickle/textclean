@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# This is a command which takes a list of files and
+# normalizes certain common unicode symbols.
+#
+# For instance, it replaces the unicode quotation mark
+# with a standard ASCII quotation mark.
+#
+# This was tested on macOS. It is unlikely to work on
+# Linux without slight modifications.
+
+for file in "$@"
+do
+    echo "$file"
+
+    # Quotes
+    sed -i '' -E 's/(“|”)/"/g' "$file"
+    sed -i '' -E "s/(‘|’)/'/g" "$file"
+
+    # En-dash
+    sed -i '' -E "s/–/--/g" "$file"
+
+    # Em-dash
+    sed -i '' -E "s/—/--/g" "$file"
+
+    # Ellipsis
+    sed -i '' -E "s/…/.../g" "$file"
+
+    # No-break space
+    sed -i '' -E "s/ / /g" "$file"
+
+    # Punctuation space
+    sed -i '' -E "s/ / /g" "$file"
+
+    # Zero-width space
+    sed -i '' -E "s/​//g" "$file"
+done
