@@ -21,19 +21,28 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/unixpickle/essentials"
 )
 
-const MinParagraphLength = 80
+const DefaultMinParagraphLength = 80
 
 func main() {
-	if len(os.Args) != 3 {
-		essentials.Die("Usage: parasplit <file.txt> <out_dir>")
+	if len(os.Args) != 3 && len(os.Args) != 4 {
+		essentials.Die("Usage: parasplit <file.txt> <out_dir> [min_len]")
 	}
 	inFile := os.Args[1]
 	outDir := os.Args[2]
+	minLen := DefaultMinParagraphLength
+	if len(os.Args) == 4 {
+		var parseErr error
+		minLen, parseErr = strconv.Atoi(os.Args[3])
+		if parseErr != nil {
+			essentials.Die("invalid min_len argument:", os.Args[3])
+		}
+	}
 
 	contents, err := ioutil.ReadFile(inFile)
 	if err != nil {
@@ -43,7 +52,7 @@ func main() {
 	split := strings.Split(strings.Replace(string(contents), "\r", "", -1), "\n\n")
 	parIdx := 0
 	for _, p := range split {
-		if len(p) < MinParagraphLength {
+		if len(p) < minLen {
 			continue
 		}
 		p = strings.Replace(p, "\n", " ", -1)
